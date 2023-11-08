@@ -1,0 +1,18 @@
+{{#if error}}
+<div class="alert-box alert-danger" role="error">
+  {{error}}
+</div>
+{{/if}}
+
+{{#if alert}}
+  <div class="alert-box alert-success" role="alert">
+    {{alert}}
+  </div>
+{{/if}}
+
+{{#each rows}}
+<span class="form-title">Edited User</span>
+<form method="POST" action="/edituser/{{this.id}}" novalidate> 
+  {{> user-form}}
+</form>
+{{/each}}

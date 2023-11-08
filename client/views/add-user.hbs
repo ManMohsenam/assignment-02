@@ -1,0 +1,73 @@
+{{#if error}}
+<div class="alert-box alert-danger" role="error">
+  {{error}}
+</div>
+{{/if}}
+
+{{#if alert}}
+<div class="alert-box alert-success" role="alert">
+  {{alert}}
+</div>
+{{/if}}
+
+<span class="form-title">Add User</span>
+<form id="addUserForm" method="POST" action="/adduser" novalidate>
+  {{> user-form}}
+</form>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('addUserForm');
+    form.addEventListener('submit', function (event) {
+      if (!validateForm()) {
+        event.preventDefault(); // Prevent the form from submitting
+      }
+    });
+
+    function validateForm() {
+      const firstName = document.getElementById('first_name').value;
+      const lastName = document.getElementById('last_name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+
+      if (!firstName || !lastName || !email || !phone) {
+        // Display an alert or error message to the user
+        const alertMessage = 'Please fill out all required fields.';
+        redirectToPageWithAlert(alertMessage);
+        return false; // Form is not valid
+      }
+
+      // Minimum 5 characters validation for firstName and lastName
+      if (firstName.length < 5 || lastName.length < 5) {
+        const alertMessage = 'First Name and Last Name must be at least 5 characters long.';
+        redirectToPageWithAlert(alertMessage);
+        return false; // Form is not valid
+      }
+
+      // Email format validation using regular expression
+      const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+      if (!email.match(emailPattern)) {
+        const alertMessage = 'Please enter a valid email address.';
+        redirectToPageWithAlert(alertMessage);
+        return false; // Form is not valid
+      }
+
+      // Phone number format validation using regular expression
+      const phonePattern = /^[0-9]+$/;
+      if (!phone.match(phonePattern) || phone.length <= 10) {
+        const alertMessage = 'Please enter a valid 10-digit phone number.';
+        redirectToPageWithAlert(alertMessage);
+        return false; // Form is not valid
+      }
+
+      return true; // Form is valid
+    }
+
+    function redirectToPageWithAlert(alertMessage) {
+      const currentURL = window.location.href;
+      const url = new URL(currentURL);
+      url.searchParams.delete('error'); // Clear any existing alert parameter
+      url.searchParams.set('error', alertMessage); // Add the new alert parameter
+      window.location.href = url.toString(); // Navigate to the updated URL
+    }
+  });
+</script>
